@@ -197,3 +197,37 @@ IF logging.IsEnabled THEN
 	csvReader.ParseToArray(resultsArray);
 END_IF
 ```
+
+## Library Version Numbering
+
+This guide will help contributors to the mobject library understand and apply appropriate versioning schemes during different development stages using the Semantic Versioning (SemVer) system.
+
+### Semantic Versioning (SemVer)
+
+Semantic Versioning [(SemVer)](https://semver.org/) is a widely adopted versioning scheme that provides a consistent way to label software releases. A SemVer string is composed of three parts: MAJOR.MINOR.PATCH (e.g., v1.0.0). Each part has a specific meaning:
+
+1. **MAJOR**: Significant changes, such as breaking changes or major feature additions, which may not be backward-compatible.
+2. **MINOR**: Non-breaking updates, such as the introduction of new features or improvements, while maintaining backward compatibility.
+3. **PATCH**: Bug fixes or minor updates that don't introduce new features or change existing ones, ensuring backward compatibility.
+
+### Alpha Stage Versioning
+
+During the alpha stage, the software is under active development, and features may be incomplete, unstable, or subject to change. Use a "0.x.y" versioning scheme for alpha releases:
+
+- Start with "v0.1.0" for the initial alpha release.
+- Increment the MINOR version when introducing new features or improvements without breaking changes (e.g., "v0.2.0").
+- Increment the PATCH version when applying bug fixes or small updates that don't introduce new features (e.g., "v0.1.1").
+
+Add a pre-release identifier "-alpha" to the version string, e.g., "v0.1.0-alpha".
+
+### Beta Stage Versioning
+
+In the beta stage, the software development is nearing completion, and most of the features are implemented and functional. The software may still have bugs or performance issues. Use a versioning scheme of "1.x.y" for beta releases:
+
+- If the software is relatively stable, use "1.x.y" for the versioning.
+- Increment the MINOR version when introducing new features or improvements without breaking changes (e.g., "v1.1.0").
+- Increment the PATCH version when applying bug fixes or small updates that don't introduce new features (e.g., "v1.0.1").
+
+If the software is not stable enough for a "1.x.y" version, continue using the "0.x.y" versioning scheme.
+
+Add a pre-release identifier like "-beta" to the version string, e.g., "v1.0.0-beta".
