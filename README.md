@@ -8,4 +8,4 @@ This coding convention has been created to help keep our code base clean and tid
 
 ## Documentation
 
-The documentation for this project can be found [here]().
+The documentation for this project can be found [here](https://mobject-dev-team.github.io/mobject-coding-convention/#/).
