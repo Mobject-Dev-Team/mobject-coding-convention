@@ -1,5 +1,7 @@
 <p align="center">
-  <img width="460" src="./images/logo.svg">
+  <picture>
+    <img class="top-logo" alt="mobject main logo" src='./images/logo-light.svg'>
+  </picture>
 </p>
 
 # Coding Convention
@@ -36,13 +38,30 @@ END_IF
 Where possible, do not abbreviate. This forces us to think, decode and remember a term. Every time we give our brain something to do it forces it to work harder. Instead favour whole words and phrases so that our mind can stay on auto-pilot when reading our code.
 
 ```example
-   VAR strBtn : BOOL;
+VAR strBtn : BOOL;
 ```
 
 It may seem only a small step, but the brain power that we have saved not decoding an abbreviation can be used for other more creative or fault finding tasks.
 
 ```example
-   VAR startButton : BOOL;
+VAR startButton : BOOL;
+```
+
+### Pointers
+
+When naming pointers, it's essential to include a lowercase 'p' prefix in their symbol names. This practice aids in quickly identifying pointers, as they are unique types that require dereferencing.
+
+```example
+VAR pCount : POINTER TO INT;
+// pCount^ := 123;
+```
+
+### PVOID
+
+The PVOID type should adhere to the general symbol naming guidelines applicable in its context. Nevertheless, incorporating the term "Address" within the symbol name is considered a best practice for clarity.
+
+```example
+VAR sourceAddress : PVOID;
 ```
 
 ## Comments
@@ -196,6 +215,40 @@ IF logging.IsEnabled THEN
 	csvReader.LoadFile('file.csv');
 	csvReader.ParseToArray(resultsArray);
 END_IF
+```
+
+## Interfaces
+
+The Interface Segregation Principle is a key concept in object-oriented design that encourages the creation of narrow, specific interfaces. It states that clients should not be forced to depend on interfaces they do not use.
+
+Instead of a large, all-encompassing interface, break down functionalities into smaller, more specific interfaces. Each interface should represent a single capability or a cohesive set of functionalities.
+
+For example, The [I_Disposable](https://disposable.mobject.org/#/i-disposable) interface has a clear, singular purpose to provide a mechanism for releasing unmanaged resources. Its sole .Dispose() method perfectly encapsulates this responsibility, ensuring that classes implementing this interface are only concerned with resource disposal. They have no access to any other non-related properties or methods.
+
+### Naming
+
+Always use PascalCase for interface names and add the I\_ prefix. If your interface does not extend from any existing interface, it's a good practice to extend from \_\_System.IQueryInterface. This approach enables future casting of the interface, ensuring compatibility and extensibility in your design.
+
+```example
+INTERFACE I_Resettable EXTENDS __System.IQueryInterface
+// implements the .Reset() method
+```
+
+```example
+INTERFACE I_PushButton EXTENDS I_EventEmitter
+// implements the .IsPressed, .IsReleased property, and the OnPressed and OnReleased events.
+```
+
+For more information on using events, please see [mobject-events](https://events.mobject.org/#/).
+
+### Extension
+
+Interfaces can be combined using the keyword `EXTENDS`. You can compose more complex interfaces by extending from multiple parents.
+
+```example
+INTERFACE I_Command EXTENDS I_Resettable, I_Disposable
+// implements the .Execute() method
+// inherits the .Reset() and .Dispose() method
 ```
 
 ## Library Version Numbering
