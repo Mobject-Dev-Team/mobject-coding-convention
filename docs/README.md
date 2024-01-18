@@ -133,10 +133,24 @@ VAR CONSTANT
 END_VAR
 ```
 
+As with all symbol names, a well-named constant should convey its purpose and context clearly.
+
+Consider the examples below:
+```example
+VAR CONSTANT
+	(* Less Clear *)
+	BUTTON_DEBOUCE_DURATION : UDINT := 3; // in milliseconds
+
+	(* More Clear *)
+	BUTTON_DEBOUCE_DURATION_IN_MS : UDINT := 3;
+END_VAR
+```
+
+The first example, BUTTON_DEBOUCE_DURATION, required the use of a comment for clarity, which is not ideal as comments can become outdated or overlooked. The second example, BUTTON_DEBOUCE_DURATION_IN_MS, includes the unit of measurement in the name itself, making it immediately clear and informative without needing additional explanation.
+
 ## Class
 
-In the IEC standard there is no keyword for Class, instead you must use a Function Block with the attributes shown below.  
-You should decorate your classes with the no_explicit_call attribute to prevent if from being used as a standard IEC Function Block.
+In the IEC standard, there is a keyword for "Class". Favour the use of CLASS POUs whenever possible. If you are unable to define a CLASS POU, consider using a Function Block with the attributes outlined below. Ensure you decorate your classes with the no_explicit_call attribute to prevent them from being used as standard IEC Function Blocks.
 
 ```example
 {attribute 'no_explicit_call' := 'This FB is a CLASS and must be accessed using methods or properties'}
