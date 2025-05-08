@@ -339,6 +339,18 @@ INTERFACE I_Resettable
 // implements the .Reset() method
 ```
 
+### Extension
+
+Interfaces can be combined using the keyword `EXTENDS`. You can compose more complex interfaces by extending from multiple parents.
+
+```example
+INTERFACE I_Command EXTENDS I_Resettable, I_Disposable
+// implements the .Execute() method
+// inherits the .Reset() and .Dispose() method
+```
+
+### Casting
+
 Extend from Query Interface when casting is required. Initially I would do all my interfaces this way, but since then I have realized that casting simply means you have lost track of the type along the way which may point to a problem with how you handle your objects.
 
 There are some interfaces which will use casting, such as Events. As an example an Event handler may receive an I_Event and cast it to the actual type I_SensorFailedEvent.
@@ -349,16 +361,6 @@ INTERFACE I_Event EXTENDS __System.IQueryInterface
 
 ```example
 INTERFACE I_SensorFailedEvent EXTENDS I_Event
-```
-
-### Extension
-
-Interfaces can be combined using the keyword `EXTENDS`. You can compose more complex interfaces by extending from multiple parents.
-
-```example
-INTERFACE I_Command EXTENDS I_Resettable, I_Disposable
-// implements the .Execute() method
-// inherits the .Reset() and .Dispose() method
 ```
 
 ## Library Version Numbering
