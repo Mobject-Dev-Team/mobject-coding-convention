@@ -64,6 +64,51 @@ The PVOID type should adhere to the general symbol naming guidelines applicable 
 VAR sourceAddress : PVOID;
 ```
 
+### Variable Alignment
+
+Variables must be aligned using the following conventions:
+
+- Begin each line with a tab character (not spaces).
+- Use a single space between each section: name, type, and (if present) address or initializer.
+- End each line with a semicolon, with no trailing space before it.
+
+```example
+VAR
+	exampleBool : BOOL := TRUE;
+	exampleInput AT %I* : INT;
+	exampleArray : ARRAY [0..n] OF REAL;
+	counter : Counter(StartValue := 123, EndValue := 456);
+END_VAR
+```
+
+### Multi-Line Initializers
+
+Classes with multiple initializers may be broken across multiple lines for readability. Use the following conventions:
+
+- The opening parenthesis must appear immediately after the class name.
+- Each parameter appears on its own line, indented with a tab.
+- A comma follows each parameter except the last.
+- The closing parenthesis and semicolon appear on a new line, aligned with the variable name.
+
+```example
+VAR
+	tcpIpClient1: TcpIpClient(
+		ServerAddress := '192.168.0.1',
+		ServerPort := 123,
+		ConnectionTimeout := T#5s,
+		KeepAlive := TRUE
+	);
+	tcpIpClient2 : TcpIpClient(
+		ServerAddress := '192.168.0.2',
+		ServerPort := 456,
+		ConnectionTimeout := T#5s,
+		KeepAlive := TRUE
+	);
+END_VAR
+```
+
+The same may also be applied to Function Block calls within the program.
+
 ## Comments
 
 Ask yourself 'why do I need a comment?'
@@ -127,15 +172,14 @@ Replace "Magic numbers" with constants to assist with readablity and understandi
 
 ```example
 VAR CONSTANT
-
 	MAXIMUM_BUFFER_SIZE_IN_BYTES : UDINT := 200;
-
 END_VAR
 ```
 
 As with all symbol names, a well-named constant should convey its purpose and context clearly.
 
 Consider the examples below:
+
 ```example
 VAR CONSTANT
 	(* Less Clear *)
@@ -229,6 +273,44 @@ IF logging.IsEnabled THEN
 	csvReader.LoadFile('file.csv');
 	csvReader.ParseToArray(resultsArray);
 END_IF
+```
+
+### Method Early Return (Guard Clauses)
+
+Use early returns (also known as guard clauses or fail-fast logic) to avoid deep nesting and improve code readability. This style is especially useful for validating conditions up-front and exiting early when requirements are not met.
+
+#### Early Return Example (preferred)
+
+```example
+IF NOT client.IsConnected THEN
+	logger.error('Client not connected');
+	RETURN;
+END_IF
+
+IF message = '' THEN
+	logger.error('Invalid or missing message');
+	RETURN;
+END_IF
+
+client.SendMessage(message);
+logger.info('Message sent');
+```
+
+#### Nested Example (non-preferred)
+
+This version nests the logic unnecessarily, making it harder to follow and increasing indentation. It becomes especially problematic as conditions grow in complexity.
+
+```example
+IF client.IsConnected THEN
+	IF message <> '' THEN
+		client.SendMessage(message);
+		logger.info('Message sent');
+	ELSE
+		logger.error('Invalid or missing message');
+	END_IF;
+ELSE
+	logger.error('Client not connected');
+END_IF;
 ```
 
 ## Interfaces
