@@ -335,8 +335,20 @@ For example, The [I_Disposable](https://disposable.mobject.org/#/i-disposable) i
 Always use PascalCase for interface names and add the I\_ prefix.
 
 ```example
-INTERFACE I_Resettable EXTENDS __System.IQueryInterface
+INTERFACE I_Resettable
 // implements the .Reset() method
+```
+
+Extend from Query Interface when casting is required. Initially I would do all my interfaces this way, but since then I have realized that casting simply means you have lost track of the type along the way which may point to a problem with how you handle your objects.
+
+There are some interfaces which will use casting, such as Events. As an example an Event handler may receive an I_Event and cast it to the actual type I_SensorFailedEvent.
+
+```example
+INTERFACE I_Event EXTENDS __System.IQueryInterface
+```
+
+```example
+INTERFACE I_SensorFailedEvent EXTENDS I_Event
 ```
 
 ### Extension
