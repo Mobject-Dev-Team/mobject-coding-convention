@@ -6,7 +6,7 @@
 
 # Coding Convention
 
-> Clean code is simple and direct. Clean code reads like well-written prose. Clean code never obscures the designer’s intent but rather is full of crisp abstractions and straightforward lines of control. - Grady Booch author of Object Oriented Analysis and Design with Applications”
+> Clean code is simple and direct. Clean code reads like well-written prose. Clean code never obscures the designer’s intent but rather is full of crisp abstractions and straightforward lines of control. - Grady Booch, author of Object Oriented Analysis and Design with Applications”
 
 ## Opening Statement
 
@@ -66,7 +66,16 @@ VAR sourceAddress : PVOID;
 
 ### Variable Alignment
 
-Variables must be aligned using the following conventions:
+This style guide is designed to be as simple as possible, therefore the same has been applied to aligning variables. You will see in the example below that a neat layout is formed by using only standard tab indentation and spaces.
+
+Four core benefits are realized,
+
+- It's fast.
+- Refactoring using Find / Replace will not destroy the layout if variable names change in length.
+- There is no requirement for collaborators to install custom tools to automate alignment.
+- It looks nice on all fonts.
+
+Variables must be aligned using the following conventions.
 
 - Begin each line with a tab character (not spaces).
 - Use a single space between each section: name, type, and (if present) address or initializer.
@@ -83,7 +92,7 @@ END_VAR
 
 ### Multi-Line Initializers
 
-Classes with multiple initializers may be broken across multiple lines for readability. Use the following conventions:
+Classes with multiple initializers may be broken across multiple lines for readability.
 
 - The opening parenthesis must appear immediately after the class name.
 - Each parameter appears on its own line, indented with a tab.
@@ -92,7 +101,7 @@ Classes with multiple initializers may be broken across multiple lines for reada
 
 ```example
 VAR
-	tcpIpClient1: TcpIpClient(
+	tcpIpClient1 : TcpIpClient(
 		ServerAddress := '192.168.0.1',
 		ServerPort := 123,
 		ConnectionTimeout := T#5s,
@@ -115,7 +124,7 @@ Ask yourself 'why do I need a comment?'
 
 If you need them to convey your code's true meaning then you should refactor and rename your variables to make your [Intent](?id=intent) clear.
 
-Do not use them for auditing, changes, author. This adds extra work to the coders following you and they will be missed and become out of date. Favour source control instead.
+Do not use comments for auditing purposes, tracking changes, or attributing authorship. This adds extra work to the coders who follow you. Favour source control instead.
 
 **Comments must not be used to,**
 
@@ -123,7 +132,7 @@ Do not use them for auditing, changes, author. This adds extra work to the coder
 - comment out old code (Delete it and use Source Control)
 - add author information (use Source Control)
 
-**Comments may be use**
+**Comments may be used**
 
 - as place holders or for general information.
 
@@ -168,7 +177,7 @@ END_CASE
 
 Constants must be ALL_CAPITALS with underscore word separation.
 
-Replace "Magic numbers" with constants to assist with readablity and understanding.
+Replace "Magic numbers" with constants to assist with readability and understanding.
 
 ```example
 VAR CONSTANT
@@ -202,7 +211,7 @@ In the IEC standard, there is a keyword for "Class". Favour the use of CLASS POU
 
 !>You must not place code in the FUNCTION_BLOCK body. Use a public method instead, such as .CyclicCall();
 
-!>You must not allow VAR_INPUT, VAR_OUTPUT and VAR_IN_OUT to exsit in a class declaration.
+!>You must not allow VAR_INPUT, VAR_OUTPUT and VAR_IN_OUT to exist in a class declaration.
 
 ### Naming
 
@@ -323,19 +332,12 @@ For example, The [I_Disposable](https://disposable.mobject.org/#/i-disposable) i
 
 ### Naming
 
-Always use PascalCase for interface names and add the I\_ prefix. If your interface does not extend from any existing interface, it's a good practice to extend from \_\_System.IQueryInterface. This approach enables future casting of the interface, ensuring compatibility and extensibility in your design.
+Always use PascalCase for interface names and add the I\_ prefix.
 
 ```example
 INTERFACE I_Resettable EXTENDS __System.IQueryInterface
 // implements the .Reset() method
 ```
-
-```example
-INTERFACE I_PushButton EXTENDS I_EventEmitter
-// implements the .IsPressed, .IsReleased property, and the OnPressed and OnReleased events.
-```
-
-For more information on using events, please see [mobject-events](https://events.mobject.org/#/).
 
 ### Extension
 
