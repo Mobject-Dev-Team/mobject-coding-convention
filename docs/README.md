@@ -6,7 +6,7 @@
 
 # Coding Convention
 
-> Clean code is simple and direct. Clean code reads like well-written prose. Clean code never obscures the designer’s intent but rather is full of crisp abstractions and straightforward lines of control. - Grady Booch, author of Object Oriented Analysis and Design with Applications”
+> "Clean code is simple and direct. Clean code reads like well-written prose. Clean code never obscures the designer’s intent but rather is full of crisp abstractions and straightforward lines of control." - Grady Booch, author of Object Oriented Analysis and Design with Applications
 
 ## Opening Statement
 
@@ -19,7 +19,7 @@ This coding convention has been created to help keep our code base clean and tid
 Use names which both reveal your intent and removes the need for supplementing your code with comments.
 
 ```example
-// Put the UPS in to full capacity mode if the Power Supply 10 is in fault
+// Bad - Put the UPS in to full capacity mode if the Power Supply 10 is in fault
 IF SUP_10.flt THEN
 	UPS.smode := 1;
 END_IF
@@ -28,6 +28,7 @@ END_IF
 The example above has been renamed and refactored to remove the comment. This allows us to read the code without placing any mental obstacles in the way of our understanding.
 
 ```example
+// Good
 IF PowerSupply10.HasFault THEN
 	UPS.mode := FULL_CAPACITY_MODE;
 END_IF
@@ -38,12 +39,14 @@ END_IF
 Where possible, do not abbreviate. This forces us to think, decode and remember a term. Every time we give our brain something to do it forces it to work harder. Instead favour whole words and phrases so that our mind can stay on auto-pilot when reading our code.
 
 ```example
+// Bad
 VAR strBtn : BOOL;
 ```
 
 It may seem only a small step, but the brain power that we have saved not decoding an abbreviation can be used for other more creative or fault finding tasks.
 
 ```example
+// Good
 VAR startButton : BOOL;
 ```
 
@@ -52,8 +55,11 @@ VAR startButton : BOOL;
 When naming pointers, it's essential to include a lowercase 'p' prefix in their symbol names. This practice aids in quickly identifying pointers, as they are unique types that require dereferencing.
 
 ```example
+// Definition
 VAR pCount : POINTER TO INT;
-// pCount^ := 123;
+
+// Use
+pCount^ := 123;
 ```
 
 ### PVOID
@@ -122,7 +128,7 @@ The same may also be applied to Function Block calls within the program.
 
 Ask yourself 'why do I need a comment?'
 
-If you need them to convey your code's true meaning then you should refactor and rename your variables to make your [Intent](?id=intent) clear.
+If you need them to convey your code's true meaning then you should refactor and rename your variables to make your intent clear.
 
 Do not use comments for auditing purposes, tracking changes, or attributing authorship. This adds extra work to the coders who follow you. Favour source control instead.
 
@@ -192,37 +198,45 @@ Consider the examples below:
 ```example
 VAR CONSTANT
 	(* Less Clear *)
-	BUTTON_DEBOUCE_DURATION : UDINT := 3; // in milliseconds
+	BUTTON_DEBOUNCE_DURATION : UDINT := 3; // in milliseconds
 
 	(* More Clear *)
-	BUTTON_DEBOUCE_DURATION_IN_MS : UDINT := 3;
+	BUTTON_DEBOUNCE_DURATION_IN_MS : UDINT := 3;
 END_VAR
 ```
 
-The first example, BUTTON_DEBOUCE_DURATION, required the use of a comment for clarity, which is not ideal as comments can become outdated or overlooked. The second example, BUTTON_DEBOUCE_DURATION_IN_MS, includes the unit of measurement in the name itself, making it immediately clear and informative without needing additional explanation.
+The first example, BUTTON_DEBOUNCE_DURATION, required the use of a comment for clarity, which is not ideal as comments can become outdated or overlooked. The second example, BUTTON_DEBOUNCE_DURATION_IN_MS, includes the unit of measurement in the name itself, making it immediately clear and informative without needing additional explanation.
 
 ## Class
 
 In the IEC standard, there is a keyword for "Class". Favour the use of CLASS POUs whenever possible. If you are unable to define a CLASS POU, consider using a Function Block with the attributes outlined below. Ensure you decorate your classes with the no_explicit_call attribute to prevent them from being used as standard IEC Function Blocks.
 
-```example
-{attribute 'no_explicit_call' := 'This FB is a CLASS and must be accessed using methods or properties'}
-```
-
 !>You must not place code in the FUNCTION_BLOCK body. Use a public method instead, such as .CyclicCall();
 
 !>You must not allow VAR_INPUT, VAR_OUTPUT and VAR_IN_OUT to exist in a class declaration.
 
-### Naming
-
-Always use **PascalCase** for class names. You should use noun or noun phrase for class names. Do not use prefixes. An underscore may be used if the class is typed and it assists with overall the readability.
+Always use the linkalways and enable_dynamic_creation attributes on funtion blocks.
 
 ```example
-FUNCTION_BLOCK AnalogValue_LREAL EXTENDS AnalogValue
-// VAR_INPUT, VAR_OUTPUT and VAR_IN_OUT is not permitted here.
-VAR
+{attribute 'linkalways'}
+{attribute 'no_explicit_call' := 'This FB is a CLASS and must be accessed using methods or properties'}
+{attribute 'enable_dynamic_creation'}
+```
 
-END_VAR
+### Naming
+
+Always use **PascalCase** for class names, and name them using nouns or noun phrases. Do not use type prefixes such as fb, FB, T\_, etc., as these resemble Hungarian notation and add unnecessary noise. However, an underscore may be used in the name if it helps clarify type specialization or improves overall readability (e.g., AnalogValue_LREAL).
+
+#### General Classe
+
+```example
+FUNCTION_BLOCK PushButton
+```
+
+#### Typed Classe
+
+```example
+FUNCTION_BLOCK AnalogValue_LREAL
 ```
 
 ### Private Variables
@@ -231,13 +245,17 @@ Private variables must be **camelCase**.
 
 Private variables which share the same name as a Property must be prefixed with an underscore. Try to avoid this type of name clash where possible.
 
-### Example
+### Full Class Example
+
+In this example, the Cylinder has a .IsBusy property,
 
 ```declaration
+{attribute 'linkalways'}
 {attribute 'no_explicit_call' := 'This FB is a CLASS and must be accessed using methods or properties'}
+{attribute 'enable_dynamic_creation'}
 FUNCTION_BLOCK Cylinder EXTENDS ComponentBase IMPLEMENTS I_Move
 VAR
-	_isBusy : BOOL; // underscore required if there is an IsBusy property
+	_isBusy : BOOL;
     state : (RETRACTED, EXTENDING, EXTENDED, RETRACTING, JAMMED_EXTENDING, JAMMED_RETRACTING);
 	retractedSensor : I_Sensor;
 	extendedSensor : I_Sensor;
@@ -251,7 +269,7 @@ END_VAR
 
 ## Methods
 
-Classes may use methods. Methods in a Function Block or Program should be avoided at all costs.
+Classes may use methods. Methods in a Function Block or Program should be avoided as this is a mix of paradigm which may be confusing for the user.
 
 Methods, like classes should have one reason to exist. They should do one job and do it well.
 
@@ -284,6 +302,24 @@ IF logging.IsEnabled THEN
 END_IF
 ```
 
+### TryMethods
+
+If a method attempts to perform an action and returns a BOOL to indicate whether it was successful (or accepted), then its name must begin with Try.
+
+This makes it immediately obvious to the reader that the method may not always succeed, and that it is their responsibility to check the result.
+
+```example
+IF dataParser.TryParseCsv(filePath, parsedData) THEN
+	logger.Info('CSV parsed successfully');
+ELSE
+	logger.Warn('Invalid CSV format');
+END_IF
+```
+
+Do not use vague names like Parse, Send, or Validate if the method returns a BOOL. Instead, prefix with Try so the intent is clear.
+
+This rule applies only when the return value is used to indicate success or failure. If your method always succeeds, or failure is handled through another mechanism (such as a class-level error property), then the Try prefix is not required.
+
 ### Method Early Return (Guard Clauses)
 
 Use early returns (also known as guard clauses or fail-fast logic) to avoid deep nesting and improve code readability. This style is especially useful for validating conditions up-front and exiting early when requirements are not met.
@@ -291,6 +327,7 @@ Use early returns (also known as guard clauses or fail-fast logic) to avoid deep
 #### Early Return Example (preferred)
 
 ```example
+// Good
 IF NOT client.IsConnected THEN
 	logger.error('Client not connected');
 	RETURN;
@@ -310,6 +347,7 @@ logger.info('Message sent');
 This version nests the logic unnecessarily, making it harder to follow and increasing indentation. It becomes especially problematic as conditions grow in complexity.
 
 ```example
+// Bad
 IF client.IsConnected THEN
 	IF message <> '' THEN
 		client.SendMessage(message);
@@ -328,15 +366,26 @@ The Interface Segregation Principle is a key concept in object-oriented design t
 
 Instead of a large, all-encompassing interface, break down functionalities into smaller, more specific interfaces. Each interface should represent a single capability or a cohesive set of functionalities.
 
-For example, The [I_Disposable](https://disposable.mobject.org/#/i-disposable) interface has a clear, singular purpose to provide a mechanism for releasing unmanaged resources. Its sole .Dispose() method perfectly encapsulates this responsibility, ensuring that classes implementing this interface are only concerned with resource disposal. They have no access to any other non-related properties or methods.
+For example, The I_Disposable of mobject-core interface has a clear, singular purpose to provide a mechanism for releasing unmanaged resources. Its sole .Dispose() method perfectly encapsulates this responsibility, ensuring that classes implementing this interface are only concerned with resource disposal. They have no access to any other non-related properties or methods.
+
+If you are disposable, implement I_Disposable, and provide a .Dispose() method. Nice, small, simple. I the code receiving it does not care what object you are, it just knows that you are disposable.
 
 ### Naming
 
 Always use PascalCase for interface names and add the I\_ prefix.
 
+The I\_ prefix is used to denote an interface as it is common to have a class and interface named the same for the first of it's concrete implementation.
+
+A collection object is a prime example. It in itself is an I_Collection. Other classes which use it, do not care what type of collection it is, only that it is a collection. Now new collections can be made if needed.
+
 ```example
-INTERFACE I_Resettable
-// implements the .Reset() method
+INTERFACE I_Collection
+
+// initial version is the same name as the interface
+FUNCTION_BLOCK Collection IMPLEMENTS I_Collection
+
+// future versions are still collections, but naming changes naturally
+FUNCTION_BLOCK OrderedCollection IMPLEMENTS I_Collection
 ```
 
 ### Extension
@@ -351,7 +400,9 @@ INTERFACE I_Command EXTENDS I_Resettable, I_Disposable
 
 ### Casting
 
-Extend from Query Interface when casting is required. Initially I would do all my interfaces this way, but since then I have realized that casting simply means you have lost track of the type along the way which may point to a problem with how you handle your objects.
+Extend from Query Interface when casting is required.
+
+Casting is sometimes a sign that type information has been lost along the way, which may point to a need for improved object handling or design.
 
 There are some interfaces which will use casting, such as Events. As an example an Event handler may receive an I_Event and cast it to the actual type I_SensorFailedEvent.
 
