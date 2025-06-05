@@ -215,7 +215,7 @@ In the IEC standard, there is a keyword for "Class". Favour the use of CLASS POU
 
 !>You must not allow VAR_INPUT, VAR_OUTPUT and VAR_IN_OUT to exist in a class declaration.
 
-Always use the linkalways and enable_dynamic_creation attributes on funtion blocks.
+Always use the linkalways and enable_dynamic_creation attributes on function blocks.
 
 ```example
 {attribute 'linkalways'}
@@ -227,13 +227,13 @@ Always use the linkalways and enable_dynamic_creation attributes on funtion bloc
 
 Always use **PascalCase** for class names, and name them using nouns or noun phrases. Do not use type prefixes such as fb, FB, T\_, etc., as these resemble Hungarian notation and add unnecessary noise. However, an underscore may be used in the name if it helps clarify type specialization or improves overall readability (e.g., AnalogValue_LREAL).
 
-#### General Classe
+#### General Class
 
 ```example
 FUNCTION_BLOCK PushButton
 ```
 
-#### Typed Classe
+#### Typed Class
 
 ```example
 FUNCTION_BLOCK AnalogValue_LREAL
